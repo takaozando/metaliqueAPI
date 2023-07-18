@@ -1,7 +1,5 @@
 package com.sprint.testspring.model;
 
-import java.util.Date;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,15 +32,27 @@ public class Requisicao {
 
     private Integer quantidadeSeparada;
 
-    private Date dataRequisicao;
+    private String dataRequisicao;
 
-    private Date dataSeparacao;
+    private String dataSeparacao;
 
-    private Date dataBaixa;
+    private String dataBaixa;
 
     private String separadoPor;
 
     private String baixaPor;
+
+    private String prateleira;
+
+    private String observacao;
+
+    public String getPrateleira() {
+        return prateleira;
+    }
+
+    public void setPrateleira(String prateleira) {
+        this.prateleira = prateleira;
+    }
 
     public Long getId() {
         return id;
@@ -124,27 +134,27 @@ public class Requisicao {
         this.quantidadeSeparada = quantidadeSeparada;
     }
 
-    public Date getDataRequisicao() {
+    public String getDataRequisicao() {
         return dataRequisicao;
     }
 
-    public void setDataRequisicao(Date dataRequisicao) {
+    public void setDataRequisicao(String dataRequisicao) {
         this.dataRequisicao = dataRequisicao;
     }
 
-    public Date getDataSeparacao() {
+    public String getDataSeparacao() {
         return dataSeparacao;
     }
 
-    public void setDataSeparacao(Date dataSeparacao) {
+    public void setDataSeparacao(String dataSeparacao) {
         this.dataSeparacao = dataSeparacao;
     }
 
-    public Date getDataBaixa() {
+    public String getDataBaixa() {
         return dataBaixa;
     }
 
-    public void setDataBaixa(Date dataBaixa) {
+    public void setDataBaixa(String dataBaixa) {
         this.dataBaixa = dataBaixa;
     }
 
@@ -164,7 +174,11 @@ public class Requisicao {
         this.baixaPor = baixaPor;
     }
 
-    // Getters e setters
+    public String getObservacao() {
+        return observacao;
+    }
 
-    // ...
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
+    }
 }
