@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/funcionarios")
-@CrossOrigin(origins = "http://localhost:3000")
+
 public class FuncionarioController {
 
     private final FuncionarioRepository funcionarioRepository;

@@ -19,12 +19,34 @@ public interface RequisicaoRepository extends JpaRepository<Requisicao, Long> {
                         "GROUP BY r.reqID, r.requisitante, r.cliente,r.dataRequisicao, r.status")
         List<Object[]> obterQuantidadeItensPorRequisicao();
 
-        @Query("SELECT CONCAT('reqID: ', r.reqID), CONCAT('requisitante: ', r.requisitante), CONCAT('cliente: ', r.cliente), CONCAT('quantidade de itens: ', COUNT(r.item)), CONCAT('data requisição: ', r.dataRequisicao), CONCAT('status: ', r.status) "
+        @Query("SELECT CONCAT('reqID: ', r.reqID), CONCAT('requisitante: ', r.requisitante), " +
+                        "CONCAT('cliente: ', r.cliente), " +
+                        "CONCAT('quantidade de itens: ', " +
+                        "(SELECT COUNT(r2.item) FROM Requisicao r2 WHERE r2.reqID = r.reqID AND r2.status NOT LIKE 'Separado')),"
+                        +
+                        "r.dataRequisicao, " +
+                        "CASE " +
+                        "WHEN (SELECT COUNT(r3.status) FROM Requisicao r3 WHERE r3.reqID = r.reqID AND r3.status = 'Em separação') > 0 "
+                        +
+                        "THEN 'Em separação' " +
+                        "WHEN (SELECT COUNT(r3.status) FROM Requisicao r3 WHERE r3.reqID = r.reqID AND r3.status = 'Pendente') = COUNT(r.status) "
+                        +
+                        "THEN 'Pendente' " +
+                        "WHEN (SELECT COUNT(r3.status) FROM Requisicao r3 WHERE r3.reqID = r.reqID AND r3.status = 'Separado') = COUNT(r.status) "
+                        +
+                        "THEN 'Separado' " +
+                        "END AS status, " +
+                        "r.observacao " + // Add a space after the comma
+                        "FROM Requisicao r " +
+                        "WHERE r.status NOT LIKE 'Separado' " +
+                        "GROUP BY r.reqID, r.requisitante, r.cliente, r.dataRequisicao,r.observacao")
+        List<Object[]> obterRequisicoesPorStatus();
+
+        @Query("SELECT CONCAT('reqID: ', r.reqID), CONCAT('requisitante: ', r.requisitante), CONCAT('cliente: ', r.cliente), CONCAT('quantidade de itens: ', COUNT(r.item)),  r.dataRequisicao  "
                         +
                         "FROM Requisicao r " +
-                        "WHERE r.status NOT IN ('Baixa OK', 'Ignorado') " +
-                        "GROUP BY r.reqID, r.requisitante, r.cliente, r.dataRequisicao, r.status")
-        List<Object[]> obterRequisicoesPorStatus();
+                        "GROUP BY r.reqID, r.requisitante, r.cliente, r.dataRequisicao")
+        List<Object[]> obterRequisicoes();
 
         @Query("SELECT COALESCE(MAX(reqID), 0) FROM Requisicao")
         int listarUltimoReqID();

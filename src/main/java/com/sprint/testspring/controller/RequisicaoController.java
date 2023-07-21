@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/requisicoes")
-@CrossOrigin(origins = "http://localhost:3000") // Specify the allowed origin here
 public class RequisicaoController {
 
     private final RequisicaoRepository requisicaoRepository;
@@ -28,12 +27,11 @@ public class RequisicaoController {
 
     @GetMapping("/historico")
     public List<Object[]> obterQuantidadeItensPorRequisicao() {
-        return requisicaoRepository.obterQuantidadeItensPorRequisicao();
+        return requisicaoRepository.obterRequisicoes();
     }
 
     @GetMapping("/pendentes")
     public List<Object[]> listarRequisicoesPorStatus() {
-        System.out.println(requisicaoRepository.obterRequisicoesPorStatus());
         return requisicaoRepository.obterRequisicoesPorStatus();
     }
 
@@ -75,10 +73,13 @@ public class RequisicaoController {
 
         for (Requisicao requisicao : requisicoesAtualizadas) {
             System.out.println("requisicao atualizada: " + requisicao.getQuantidadeSeparada());
-            if (requisicao.getQuantidadeSeparada() == null) {
+            if (requisicao.getQuantidadeSeparada() == null || requisicao.getQuantidadeSeparada() == 0) {
                 requisicao.setStatus("Pendente");
-            } else if (requisicao.getQuantidade() <= requisicao.getQuantidadeSeparada()) {
+            } else if (requisicao.getQuantidade() == requisicao.getQuantidadeSeparada()) {
                 requisicao.setStatus("Separado");
+            } else if (requisicao.getQuantidade() > requisicao.getQuantidadeSeparada()
+                    && requisicao.getQuantidadeSeparada() > 0) {
+                requisicao.setStatus("Em separação");
             } else {
                 requisicao.setStatus("Pendente");
             }
