@@ -36,10 +36,11 @@ public interface RequisicaoRepository extends JpaRepository<Requisicao, Long> {
                         +
                         "THEN 'Separado' " +
                         "END AS status, " +
-                        "r.observacao " + // Add a space after the comma
+                        "r.observacao, " +
+                        "(SELECT COUNT(r3.item) FROM Requisicao r3 WHERE r3.reqID = r.reqID) " +
                         "FROM Requisicao r " +
-                        "WHERE r.status NOT LIKE 'Separado' " +
-                        "GROUP BY r.reqID, r.requisitante, r.cliente, r.dataRequisicao,r.observacao")
+                        "WHERE r.status NOT LIKE 'Baixa OK' " +
+                        "GROUP BY r.reqID, r.requisitante, r.cliente, r.dataRequisicao, r.observacao")
         List<Object[]> obterRequisicoesPorStatus();
 
         @Query("SELECT CONCAT('reqID: ', r.reqID), CONCAT('requisitante: ', r.requisitante), CONCAT('cliente: ', r.cliente), CONCAT('quantidade de itens: ', COUNT(r.item)),  r.dataRequisicao  "
@@ -52,7 +53,7 @@ public interface RequisicaoRepository extends JpaRepository<Requisicao, Long> {
         int listarUltimoReqID();
 
         @Query("SELECT r FROM Requisicao r " +
-                        "WHERE r.status NOT IN ('Baixa OK', 'Ignorado', 'Separado') " +
+                        "WHERE r.status NOT LIKE 'Baixa OK' " +
                         "AND r.reqID = :reqID ")
         List<Requisicao> obterRequisicoesPendentesPorReqID(@Param("reqID") Long reqID);
 
